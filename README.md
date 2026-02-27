@@ -97,11 +97,7 @@ ESP32 Air Mouse/
 
 ## Usage & Modes – Full Tutorial
 
-Your ESP32 Air Mouse has **three main modes**, selectable via the potentiometer. Each mode changes joystick, SW button, and multifunction button behavior. The OLED provides feedback on mode, volume, and timer.  
-
-You can see basic navigation in action:  
-
-![Basic Usage](examples/simple_usage.gif)
+My ESP32 Air Mouse has **three main modes**, selectable via the potentiometer. Each mode changes joystick, SW button, and multifunction button behavior. The OLED provides feedback on mode, volume, and timer.  
 
 ---
 
@@ -180,7 +176,7 @@ SW Button:
 ### Demo of Basic Usage
 ![Usage Demo](examples/simple_usage.gif)
 
-- Showing the first mode "Navigation" basic mouse movement, scrolling and zooming in/out.
+- You can see basic navigation in action
 
 ---
 
