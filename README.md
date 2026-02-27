@@ -23,7 +23,14 @@ ESP32 Air Mouse/
 ├─ tools/
 │ └─ FreeVK.exe # On-screen keyboard executable
 │
-└─ README.md
+├─ examples/
+│ ├─ mode1_navigation.jpg
+│ ├─ mode2_volume.jpg
+│ ├─ mode3_shutdown_pc_side.jpg
+│ ├─ mode3_shutdown_setting.jpg
+│ └─ simple_usage.gif
+│
+├─ README.md
 └─ LICENSE
 
 
@@ -33,13 +40,13 @@ ESP32 Air Mouse/
 
 ## Features
 
-- Mouse control with accelerometer/gyro and joystick
-- Left/right click, scrolling, and precision movements
-- Media control (volume, track navigation, play/pause)
-- Shortcut keys and website/app launch
-- Shutdown timer with countdown
-- OLED feedback for mode, volume, timer, etc.
-- Real-time PC integration with Python (`pynput`, `pycaw`)
+- Mouse control with accelerometer/gyro and joystick  
+- Left/right click, scrolling, and precision movements  
+- Media control (volume, track navigation, play/pause)  
+- Shortcut keys and website/app launch  
+- Shutdown timer with countdown  
+- OLED feedback for mode, volume, timer, etc.  
+- Real-time PC integration with Python (`pynput`, `pycaw`)  
 
 ---
 
@@ -47,19 +54,19 @@ ESP32 Air Mouse/
 
 **Arduino:**
 
-- MPU6050 library
-- Adafruit GFX
-- Adafruit ST7735
-- BLE Mouse library
+- MPU6050 library  
+- Adafruit GFX  
+- Adafruit ST7735  
+- BLE Mouse library  
 
 **Python (PC side):**
 
-- pyserial
-- pynput
-- pycaw
-- psutil
-- pytz
-- comtypes
+- pyserial  
+- pynput  
+- pycaw  
+- psutil  
+- pytz  
+- comtypes  
 
 > Install Python dependencies with:  
 > `pip install pyserial pynput pycaw psutil pytz comtypes`
@@ -88,16 +95,38 @@ ESP32 Air Mouse/
 
 ---
 
-## Usage
+## Usage & Modes
 
-- Switch modes via potentiometer:  
-  1. Navigation (mouse + browser)  
-  2. Media control  
-  3. Shortcuts & shutdown timer  
-- Joystick and buttons handle movement, clicks, scroll, volume, and shortcuts.  
-- OLED shows mode, volume, and timer feedback.  
+### Mode 1 – Navigation (Mouse + Browser)
+![Mode 1 Navigation](examples/mode1_navigation.jpg)
+
+- Move mouse with accelerometer/gyro + joystick  
+- Left/right click  
+- Scrolling with joystick  
+- Browser shortcuts via SW button  
+
+### Mode 2 – Media Control
+![Mode 2 Volume](examples/mode2_volume.jpg)
+
+- Volume up/down with joystick  
+- Track previous/next  
+- Play/pause via SW button  
+
+### Mode 3 – Shortcuts & Shutdown Timer
+![PC Side Shutdown](examples/mode3_shutdown_pc_side.jpg)
+![Shutdown Settings](examples/mode3_shutdown_setting.jpg)
+
+- Set shutdown timer  
+- Launch Free Virtual Keyboard  
+- Shortcut keys and other controls  
+
+### Demo of Basic Usage
+![Usage Demo](examples/simple_usage.gif)
+
+- Shows real-time mouse movement, clicks, scrolling, and mode switching  
 
 ---
+
 ## Connections / Wiring
 
 | Component | Pin on Component | Connected to ESP32 / Notes |
@@ -106,8 +135,8 @@ ESP32 Air Mouse/
 |            | GND | GND |
 |            | SCL | D22 |
 |            | SDA | D21 |
-| **Display (ST7735)** | VCC | 5V (direct) |
-|                     | GND | GND (direct) |
+| **Display (ST7735)** | VCC | 5V |
+|                     | GND | GND |
 |                     | CS | D5 |
 |                     | RESET | D17 |
 |                     | A0 / DC | D16 |
@@ -137,6 +166,8 @@ ESP32 Air Mouse/
 | **Arduino Nano (optional)** | 5V | 5V |
 |                              | GND | GND |
 
+---
+
 ## License
 
 MIT License – see [LICENSE](./LICENSE)
@@ -145,6 +176,6 @@ MIT License – see [LICENSE](./LICENSE)
 
 ## Notes
 
-- Update COM port in `mousePynput.py` to match ESP32 connection.  
-- Ensure fonts and FreeVK.exe paths are correct.  
-- Tested on Windows 10/11 with ESP32 boards.
+- Update COM port in `mousePynput.py` to match ESP32 connection  
+- Ensure fonts and FreeVK.exe paths are correct  
+- Tested on Windows 10/11 with ESP32 boards
