@@ -95,35 +95,92 @@ ESP32 Air Mouse/
 
 ---
 
-## Usage & Modes
+## Usage & Modes – Full Tutorial
 
-### Mode 1 – Navigation (Mouse + Browser)
+Your ESP32 Air Mouse has **three main modes**, selectable via the potentiometer. Each mode changes joystick, SW button, and multifunction button behavior. The OLED provides feedback on mode, volume, and timer.  
+
+You can see basic navigation in action:  
+
+![Basic Usage](examples/simple_usage.gif)
+
+---
+
+### Mode 1 – Navigation (Mouse + Browser)  
 ![Mode 1 Navigation](examples/mode1_navigation.jpg)
 
-- Move mouse with accelerometer/gyro + joystick  
-- Left/right click  
-- Scrolling with joystick  
-- Browser shortcuts via SW button  
+Joystick Actions:
+- Up → Scroll up
+- Down → Scroll down
+- Left → Zoom in (Ctrl + Shift + =)
+- Right → Zoom out (Ctrl + -)
 
-### Mode 2 – Media Control
+SW Button (joystick press):
+- Single tap → Starts double-tap timer
+- Double tap → Open new browser tab (Ctrl + T)
+- 1-second hold → Close current browser tab (Ctrl + W)
+
+Multifunction Button:
+- Press → Toggle Free Virtual Keyboard (opens/closes FreeVK.exe)
+
+**Testing Mode 1:**
+1. Move joystick in all directions → scroll & zoom
+2. Press SW button → single tap, double tap, long hold
+3. Press multifunction button → open/close virtual keyboard
+4. Observe OLED feedback
+
+---
+
+### Mode 2 – Media & Volume Control  
 ![Mode 2 Volume](examples/mode2_volume.jpg)
 
-- Volume up/down with joystick  
-- Track previous/next  
-- Play/pause via SW button  
+Joystick Actions:
+- X axis (dominant)
+  - Right → Volume up
+  - Left → Volume down
+- Y axis (dominant)
+  - Up → Previous track
+  - Down → Next track
 
-### Mode 3 – Shortcuts & Shutdown Timer
+SW Button:
+- Short press (joystick at rest) → Play/Pause
+
+**Testing Mode 2:**
+1. Move joystick X → adjust volume
+2. Move joystick Y → skip tracks
+3. Press SW button → play/pause
+4. Observe OLED feedback
+
+---
+
+### Mode 3 – Shutdown Timer & Shortcuts  
 ![PC Side Shutdown](examples/mode3_shutdown_pc_side.jpg)
 ![Shutdown Settings](examples/mode3_shutdown_setting.jpg)
 
-- Set shutdown timer  
-- Launch Free Virtual Keyboard  
-- Shortcut keys and other controls  
+Multifunction Button:
+- First press → Enter shutdown timer mode
+- Second press → Exit shutdown timer mode
+
+Joystick X axis:
+- Right → Increase timer by 10 min
+- Left → Decrease timer by 10 min
+
+SW Button:
+- Short press → Start shutdown timer
+- Long press → Cancel shutdown timer
+
+- Buttons → Open websites in Brave
+
+**Testing Mode 3:**
+1. Press multifunction button → enter timer mode
+2. Move joystick X → increase/decrease timer
+3. SW button short press → start shutdown timer (ensure safe testing)
+4. SW button long press → cancel shutdown timer
+5. Observe OLED feedback and system behavior
 
 ### Demo of Basic Usage
 ![Usage Demo](examples/simple_usage.gif)
 
-- Shows real-time mouse movement, clicks, scrolling, and mode switching  
+- Showing the first mode "Navigation" basic mouse movement, scrolling and zooming in/out.
 
 ---
 
