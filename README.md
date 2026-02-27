@@ -6,33 +6,33 @@ A multi-mode Bluetooth PC controller using an ESP32, MPU6050, joystick, buttons,
 
 ## Project Structure
 
-
+```
 ESP32 Air Mouse/
 │
 ├─ firmware/
-│ └─ sketch_apr9a/
-│   └─ sketch_apr9a.ino # Arduino sketch for ESP32
+│  └─ sketch_apr9a/
+│     └─ sketch_apr9a.ino   # Arduino sketch for ESP32
 │
 ├─ fonts/
-│ ├─ digital_715pt7b.h
-│ └─ Orbitron_Bold9pt7b.h
+│  ├─ digital_715pt7b.h
+│  └─ Orbitron_Bold9pt7b.h
 │
 ├─ python/
-│ └─ mousePynput.py # Python script for PC integration
+│  └─ mousePynput.py       # Python script for PC integration
 │
 ├─ tools/
-│ └─ FreeVK.exe # On-screen keyboard executable
+│  └─ FreeVK.exe            # On-screen keyboard executable
 │
 ├─ examples/
-│ ├─ mode1_navigation.jpg
-│ ├─ mode2_volume.jpg
-│ ├─ mode3_shutdown_pc_side.jpg
-│ ├─ mode3_shutdown_setting.jpg
-│ └─ simple_usage.gif
+│  ├─ mode1_navigation.jpg
+│  ├─ mode2_volume.jpg
+│  ├─ mode3_shutdown_pc_side.jpg
+│  ├─ mode3_shutdown_setting.jpg
+│  └─ simple_usage.gif
 │
 ├─ README.md
 └─ LICENSE
-
+```
 
 > **Note:** Paths in the code reflect this structure. The Arduino sketch loads fonts from `fonts/`, and the Python script points to `tools/FreeVK.exe`. Update paths in the code if you move files elsewhere.
 
