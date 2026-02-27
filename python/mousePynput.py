@@ -7,18 +7,19 @@ import webbrowser  # For opening URLs in web browsers
 from datetime import datetime  # For working with current date and time
 import pytz  # For timezone handling
 import os  # import the os module for working with file paths and directories
+from comtypes import CLSCTX_ALL  # COM context constant for audio interface
 
 # Mouse and keyboard control
-from pynput.mouse import Controller as MouseController, Button  # Mouse cursor control and button clicks
-from pynput.keyboard import Controller as KeyboardController, Key  # Keyboard input and special keys
+from pynput.mouse import Controller as MouseController, Button  # move cursor & click buttons
+from pynput.keyboard import Controller as KeyboardController, Key  # send keys & special keys
 
 # Audio control
-from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume  # For getting/setting system audio volume
-from comtypes import cast, POINTER  # Required for working with pycaw COM interfaces
+from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume  # get/set system volume
+from comtypes import cast, POINTER  # required for working with COM interfaces
 # --------------------------- Setup ---------------------------
 mouse = MouseController()
 keyboard = KeyboardController()
-SERIAL_PORT = 'COM6'  # change this if needed
+SERIAL_PORT = 'COM5'  # change this if needed
 ser = serial.Serial(SERIAL_PORT, 38400)
 time.sleep(2)  # wait for serial connection to stabilize
 
@@ -64,20 +65,19 @@ setVolumeOnce = True
 keyboard_app_path = os.path.join(os.path.dirname(__file__), "..", "tools", "FreeVK.exe")
 
 # --------------------------- Volume Control ---------------------------
+
+devices = AudioUtilities.GetSpeakers()
+volume_interface = devices.EndpointVolume  # directly use EndpointVolume
+
 def get_volume():
-    devices = AudioUtilities.GetSpeakers()
-    interface = devices.Activate(IAudioEndpointVolume._iid_, 23, None)
-    volume_interface = cast(interface, POINTER(IAudioEndpointVolume))
-    return volume_interface.GetMasterVolumeLevelScalar() * 100
+    # Returns 0‑100%
+    return int(volume_interface.GetMasterVolumeLevelScalar() * 100)
 
 def set_volume(level):
-    devices = AudioUtilities.GetSpeakers()
-    interface = devices.Activate(IAudioEndpointVolume._iid_, 23, None)
-    volume_interface = cast(interface, POINTER(IAudioEndpointVolume))
+    level = max(0, min(level, 100))
     volume_interface.SetMasterVolumeLevelScalar(level / 100, None)
 
 volume_level = get_volume()
-
 # --------------------------- Browser Helpers ---------------------------
 def is_brave_running():
     for proc in psutil.process_iter(['name']):
@@ -238,72 +238,72 @@ while True:
 
         # --------------------------- Mode 3: Shutdown / Browser ---------------------------
         elif potentiometerMode == 3:
-    bootupInCurrentModeTwo = False
+            bootupInCurrentModeTwo = False
 
-    # --- Enter or Exit Shutdown Timer Mode ---
-    if multiFunctionButton == 1 and not shutdown_mode and not shutdown_timer_running:
-        shutdown_mode = True
-        shutdown_timer_seconds = 600  # Default 10 minutes
-        send_command(f"ENTER_TIMER_MODE:{shutdown_timer_seconds}")
-        print(f"[Info] Entered Shutdown Timer Mode: {shutdown_timer_seconds // 60} min")
-        time.sleep(0.3)  # Debounce
-    elif multiFunctionButton == 1 and shutdown_mode and not shutdown_timer_running:
-        shutdown_mode = False
-        shutdown_timer_seconds = 0
-        send_command("EXIT_TIMER_MODE")
-        print("[Info] Exited Shutdown Timer Mode")
-        time.sleep(0.3)  # Debounce
-
-    if shutdown_mode:
-        # --- Adjust timer using joystick ---
-        if joy_x > joyx_shutdown_threshold and not joy_right_active:
-            shutdown_timer_seconds += 600  # Increase 10 min
-            send_command(f"UPDATE_TIMER:{shutdown_timer_seconds}")
-            joy_right_active = True
-            joy_left_active = False
-            print(f"[Timer] Increased to {shutdown_timer_seconds // 60} min")
-        elif joy_x < -joyx_shutdown_threshold and not joy_left_active:
-            shutdown_timer_seconds = max(0, shutdown_timer_seconds - 600)
-            send_command(f"UPDATE_TIMER:{shutdown_timer_seconds}")
-            joy_left_active = True
-            joy_right_active = False
-            print(f"[Timer] Decreased to {shutdown_timer_seconds // 60} min")
-        else:
-            joy_right_active = joy_left_active = False
-
-        # --- SW button short/long press handling ---
-        if sw and not prev_sw:
-            sw_press_time = time.time()
-        elif not sw and prev_sw:
-            held_time = time.time() - sw_press_time
-            if held_time < 1 and shutdown_timer_seconds > 0 and not shutdown_timer_running:
-                shutdown_timer_running = True
-                subprocess.run(f'shutdown -s -f -t {shutdown_timer_seconds}', shell=True)
-                send_command(f"START_TIMER:{shutdown_timer_seconds}")
-                print(f"[Timer] Shutdown scheduled in {shutdown_timer_seconds // 60} minutes")
-            elif held_time >= 1:
-                shutdown_timer_running = False
+            # --- Enter or Exit Shutdown Timer Mode ---
+            if multiFunctionButton == 1 and not shutdown_mode and not shutdown_timer_running:
+                shutdown_mode = True
+                shutdown_timer_seconds = 600  # Default 10 minutes
+                send_command(f"ENTER_TIMER_MODE:{shutdown_timer_seconds}")
+                print(f"[Info] Entered Shutdown Timer Mode: {shutdown_timer_seconds // 60} min")
+                time.sleep(0.3)  # Debounce
+            elif multiFunctionButton == 1 and shutdown_mode and not shutdown_timer_running:
                 shutdown_mode = False
-                subprocess.run('shutdown -a', shell=True)
-                send_command("CANCEL_TIMER")
+                shutdown_timer_seconds = 0
                 send_command("EXIT_TIMER_MODE")
-                print("[Timer] Shutdown aborted")
-        prev_sw = sw
+                print("[Info] Exited Shutdown Timer Mode")
+                time.sleep(0.3)  # Debounce
 
-    # --- Browser shortcuts ---
-    if redButton:
-        open_in_brave("https://www.youtube.com")
-        print("[Browser] Opened YouTube")
-    if left_click:
-        open_in_brave("https://www.netflix.com")
-        print("[Browser] Opened Netflix")
-    if right_click:
-        open_in_brave("https://chat.openai.com")
-        print("[Browser] Opened ChatGPT")
+            if shutdown_mode:
+                # --- Adjust timer using joystick ---
+                if joy_x > joyx_shutdown_threshold and not joy_right_active:
+                    shutdown_timer_seconds += 600  # Increase 10 min
+                    send_command(f"UPDATE_TIMER:{shutdown_timer_seconds}")
+                    joy_right_active = True
+                    joy_left_active = False
+                    print(f"[Timer] Increased to {shutdown_timer_seconds // 60} min")
+                elif joy_x < -joyx_shutdown_threshold and not joy_left_active:
+                    shutdown_timer_seconds = max(0, shutdown_timer_seconds - 600)
+                    send_command(f"UPDATE_TIMER:{shutdown_timer_seconds}")
+                    joy_left_active = True
+                    joy_right_active = False
+                    print(f"[Timer] Decreased to {shutdown_timer_seconds // 60} min")
+                else:
+                    joy_right_active = joy_left_active = False
 
-except Exception as e:
-    print(f"[Error] {e}")
-    time.sleep(0.05)
+                # --- SW button short/long press handling ---
+                if sw and not prev_sw:
+                    sw_press_time = time.time()
+                elif not sw and prev_sw:
+                    held_time = time.time() - sw_press_time
+                    if held_time < 1 and shutdown_timer_seconds > 0 and not shutdown_timer_running:
+                        shutdown_timer_running = True
+                        subprocess.run(f'shutdown -s -f -t {shutdown_timer_seconds}', shell=True)
+                        send_command(f"START_TIMER:{shutdown_timer_seconds}")
+                        print(f"[Timer] Shutdown scheduled in {shutdown_timer_seconds // 60} minutes")
+                    elif held_time >= 1:
+                        shutdown_timer_running = False
+                        shutdown_mode = False
+                        subprocess.run('shutdown -a', shell=True)
+                        send_command("CANCEL_TIMER")
+                        send_command("EXIT_TIMER_MODE")
+                        print("[Timer] Shutdown aborted")
+                prev_sw = sw
 
-# Small delay to prevent CPU overload
-time.sleep(0.01)
+            # --- Browser shortcuts ---
+            if redButton:
+                open_in_brave("https://www.youtube.com")
+                print("[Browser] Opened YouTube")
+            if left_click:
+                open_in_brave("https://www.netflix.com")
+                print("[Browser] Opened Netflix")
+            if right_click:
+                open_in_brave("https://chat.openai.com")
+                print("[Browser] Opened ChatGPT")
+
+    except Exception as e:
+        print(f"[Error] {e}")
+        time.sleep(0.05)
+
+    # Small delay to prevent CPU overload
+    time.sleep(0.01)
