@@ -216,8 +216,6 @@ SW Button:
 |                  | Diagonal / GND | GND |
 | **White Button** | Pin | D14 |
 |                  | Diagonal / GND | GND |
-| **Arduino Nano (optional)** | 5V | 5V |
-|                              | GND | GND |
 
 ---
 
